@@ -1,0 +1,344 @@
+/* =========================
+   GOOGLE FONT
+========================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* =========================
+   ROOT COLORS
+========================= */
+:root{
+    --bg-color:#050816;
+    --card-color:rgba(255,255,255,0.05);
+    --primary:#00bfff;
+    --secondary:#4f46e5;
+    --text:#ffffff;
+    --text-light:#cbd5e1;
+    --border:rgba(255,255,255,0.12);
+}
+/* =========================
+   GLOBAL RESET
+========================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+html{
+    scroll-behavior:smooth;
+}
+body{
+    background:linear-gradient(
+        135deg,
+        #050816,
+        #081b33,
+        #101827
+    );
+    color:white;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+/* =========================
+   PARTICLES BACKGROUND
+========================= */
+#particles{
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+/* =========================
+   NAVBAR
+========================= */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    position:sticky;
+    top:0;
+    backdrop-filter:blur(15px);
+    background:rgba(0,0,0,0.3);
+    border-bottom:1px solid var(--border);
+    z-index:1000;
+}
+.logo{
+    font-size:28px;
+    font-weight:700;
+    color:var(--primary);
+}
+.header a{
+    text-decoration:none;
+    color:white;
+    margin-left:25px;
+    transition:.3s;
+    font-weight:500;
+}
+.header a:hover{
+    color:var(--primary);
+}
+/* =========================
+   HERO SECTION
+========================= */
+.hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px;
+}
+.hero h1{
+    font-size:4rem;
+    max-width:900px;
+    background:linear-gradient(
+        90deg,
+        #00bfff,
+        #4f46e5,
+        #00ffff
+    );
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    -webkit-text-fill-color: transparent;
+}
+.hero p{
+    margin-top:20px;
+    max-width:700px;
+    color:var(--text-light);
+    font-size:1.1rem;
+}
+/* =========================
+   START BUTTON
+========================= */
+.start-btn{
+    margin-top:40px;
+    padding:16px 40px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(
+        135deg,
+        #00bfff,
+        #4f46e5
+    );
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.4s;
+    box-shadow:
+    0 0 20px #00bfff55,
+    0 0 40px #4f46e555;
+}
+.start-btn:hover{
+    transform:
+    translateY(-5px)
+    scale(1.05);
+    box-shadow:
+    0 0 35px #00bfff,
+    0 0 60px #4f46e5;
+}
+/* =========================
+   DASHBOARD
+========================= */
+#dashboard{
+    padding:80px 8%;
+}
+#dashboard h1{
+    text-align:center;
+    font-size:3rem;
+}
+#dashboard h2{
+    text-align:center;
+    color:var(--text-light);
+    margin-top:15px;
+}
+/* =========================
+   SEARCH BAR
+========================= */
+.search-section{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:50px;
+    flex-wrap:wrap;
+}
+#searchBox{
+    width:450px;
+    padding:15px 20px;
+    border-radius:15px;
+    border:1px solid var(--border);
+    background:var(--card-color);
+    color:white;
+    outline:none;
+}
+.search-section button{
+    padding:15px 30px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    background:var(--primary);
+    color:white;
+    transition:.3s;
+}
+.search-section button:hover{
+    transform:translateY(-3px);
+}
+/* =========================
+   VIDEO CONTAINER
+========================= */
+#videoContainer{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+/* =========================
+   GLASS CARDS
+========================= */
+.difficulty-section,
+#questionsSection,
+#mcqSection{
+    width:90%;
+    margin:40px auto;
+    padding:30px;
+    border-radius:25px;
+    background:var(--card-color);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    box-shadow:
+    0 8px 30px rgba(0,0,0,0.3);
+}
+.difficulty-section h2,
+#questionsSection h2,
+#mcqSection h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+/* =========================
+   BUTTON GROUPS
+========================= */
+.level-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+.level-btn{
+    padding:14px 28px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    color:white;
+    background:
+    linear-gradient(
+        135deg,
+        #00bfff,
+        #4f46e5
+    );
+    transition:0.3s;
+}
+.level-btn:hover{
+    transform:
+    translateY(-4px)
+    scale(1.05);
+    box-shadow:
+    0 0 20px #00bfff;
+}
+/* =========================
+   QUIZ CONTAINER
+========================= */
+#quizContainer{
+    margin-top:25px;
+    padding:25px;
+    border-radius:20px;
+    background:
+    rgba(255,255,255,0.04);
+    min-height:200px;
+    color:var(--text-light);
+}
+/* =========================
+   LOADING EFFECT
+========================= */
+.loader{
+    width:60px;
+    height:60px;
+    border:5px solid #222;
+    border-top:5px solid #00bfff;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+/* =========================
+   FADE ANIMATION
+========================= */
+.fade-in{
+    animation:fadeIn 1s ease;
+}
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+    .hero h1{
+        font-size:2.5rem;
+    }
+    #searchBox{
+        width:100%;
+    }
+    .header{
+        flex-direction:column;
+        gap:15px;
+    }
+    .level-buttons{
+        flex-direction:column;
+    }
+}
+#videoContainer{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(350px,1fr));
+    gap:25px;
+    margin-top:40px;
+}
+.video-card{
+    background:
+    rgba(255,255,255,0.05);
+    border:
+    1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:20px;
+    backdrop-filter:blur(15px);
+    transition:0.3s;
+}
+.video-card:hover{
+    transform:
+    translateY(-5px);
+    box-shadow:
+    0 0 25px rgba(0,191,255,0.4);
+}
+.video-card h3{
+    margin-bottom:15px;
+}
+.video-card iframe{
+    border-radius:15px;
+}
+.video-card p{
+    margin-top:10px;
+    color:#cbd5e1;
+}
