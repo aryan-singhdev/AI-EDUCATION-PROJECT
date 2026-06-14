@@ -3,6 +3,7 @@
 // ==========================
 const GEMINI_API_KEY = "GEMINI_API_KEY";
 const YOUTUBE_API_KEY = "YOUTUBE_API_KEY";
+let lastRequestTime = 0;
 
 const startButton = document.getElementById("start-btn");
 const dashboard = document.getElementById("dashboard");
@@ -76,7 +77,14 @@ function selectLevel(level) {
 async function generateQuestions(type) {
     const topic = document.getElementById("searchBox").value.trim();
     const quizContainer = document.getElementById("quizContainer");
+    const now = Date.now();
 
+if (now - lastRequestTime < 30000) {
+    alert("Please wait 30 seconds before generating again");
+    return;
+}
+
+lastRequestTime = now;
     if (!topic) {
         alert("Please enter a topic first");
         return;
@@ -96,7 +104,7 @@ async function generateQuestions(type) {
 
     try {
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -111,7 +119,7 @@ async function generateQuestions(type) {
 
         if (!response.ok) {
             console.error("API Error:", data);
-            quizContainer.innerHTML = `<p>API Error: ${data?.error?.message || "Unknown error"}</p>`;
+            quizContainer.innerHTML = "<p>API Error: "+(data?.error?.message || "Unknown error")+"</p>";
             return;
         }
 
@@ -119,11 +127,7 @@ async function generateQuestions(type) {
             data.candidates?.[0]?.content?.parts?.[0]?.text ||
             "Unable to generate questions";
 
-        quizContainer.innerHTML = `
-            <div class="question-card">
-                <pre>${text}</pre>
-            </div>
-        `;
+        renderInteractiveMCQ(text);
 
     } catch (error) {
         console.error(error);
@@ -195,3 +199,106 @@ document.head.appendChild(style);
 window.onload = function () {
     console.log("EduAI Loaded Successfully");
 };
+function renderInteractiveMCQ(responseText) {
+    const container = document.getElementById("quizContainer");
+
+    // Split by Q1, Q2, Q3... pattern
+    const parts = responseText.split(/(?=Q\d+[:.])/).filter(p => p.trim());
+
+    let html = '<div id="mcq-wrapper">';
+
+    parts.forEach((block, index) => {
+        const lines = block.trim().split('\n').filter(l => l.trim() !== '');
+
+        // First line is the question
+        const questionLine = lines[0];
+
+        // Find options A) B) C) D)
+        const options = lines.filter(l => /^[A-D][).]/.test(l.trim()));
+
+        // Find correct answer line but DON'T show it
+        const answerLine = lines.find(l => /correct answer/i.test(l));
+        const correctLetter = answerLine
+            ? (answerLine.match(/[A-D]/i)?.[0]?.toUpperCase() || null)
+            : null;
+
+        if (options.length === 0) return; // skip non-MCQ blocks
+
+    html += '<div class="mcq-question" id="mcq-' + index + '" data-correct="' + correctLetter + '">' +
+'<p class="question-text"><strong>' + questionLine + '</strong></p>' +
+'<div class="options-grid">' +
+options.map(function(opt, i) {
+    var letter = opt.trim()[0].toUpperCase();
+    var text = opt.trim().substring(2).trim();
+    return '<button class="option-btn" id="btn-' + index + '-' + letter + '" onclick="selectOption(' + index + ','+ "'" + letter + "'"+',this)">' + letter + ') ' + text + '</button>';
+}).join('') +
+'</div>' +
+'<div class="mcq-feedback" id="feedback-' + index + '"></div>' +
+'</div>';
+
+}); // forEach ends here
+
+html += '<button id="submitBtn" onclick="submitAllAnswers()" style="margin-top:25px;padding:14px 40px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);color:white;border:none;border-radius:12px;font-size:1.1rem;font-weight:bold;cursor:pointer;display:block;width:100%;">SUBMIT QUIZ</button>';
+html += '<div id="finalScore"></div>';
+
+container.innerHTML = html;
+window.mcqSelections = {};
+}
+
+function selectOption(qIndex, letter, btn) {
+    // Remove selected from all buttons in this question
+    var allBtns = document.querySelectorAll('#btn-' + qIndex + '-A, #btn-' + qIndex + '-B, #btn-' + qIndex + '-C, #btn-' + qIndex + '-D');
+    allBtns.forEach(function(b) {
+        b.classList.remove('selected');
+    });
+    
+    // Mark this one selected
+    btn.classList.add('selected');
+    window.mcqSelections[qIndex] = letter;
+};
+
+function submitAllAnswers() {
+    var cards = document.querySelectorAll('.mcq-question');
+    var score = 0;
+    var unanswered = 0;
+
+    cards.forEach(function(card, index) {
+        var correct = card.dataset.correct;
+        var chosen = window.mcqSelections[index];
+        var feedback = document.getElementById('feedback-' + index);
+
+        card.querySelectorAll('.option-btn').forEach(function(btn) {
+            btn.onclick = null;
+            btn.style.cursor = 'default';
+        });
+
+        if (!chosen) {
+            unanswered++;
+            feedback.innerHTML = "⚠️ Not answered! Correct: <strong>" + correct + "</strong>";
+            feedback.style.color = 'orange';
+            var cb = document.getElementById('btn-' + index + '-' + correct);
+            if (cb) cb.classList.add('correct');
+        } else if (chosen === correct) {
+            score++;
+            var cb = document.getElementById('btn-' + index + '-' + chosen);
+            if (cb) cb.classList.add('correct');
+            feedback.innerHTML = "✅ Correct!";
+            feedback.style.color = '#00ff88';
+        } else {
+            var wb = document.getElementById('btn-' + index + '-' + chosen);
+            var cb = document.getElementById('btn-' + index + '-' + correct);
+            if (wb) wb.classList.add('wrong');
+            if (cb) cb.classList.add('correct');
+            feedback.innerHTML = "❌ Wrong! Correct: <strong>" + correct + "</strong>";
+            feedback.style.color = '#ff4444';
+        }
+        feedback.style.display = 'block';
+    });
+
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('finalScore').innerHTML =
+        "<div style='text-align:center;margin-top:20px;padding:20px;background:rgba(255,255,255,0.05);border-radius:15px;'>" +
+        "<h2 style='color:#00d4ff;'>🎯 Score: " + score + " / " + cards.length + "</h2>" +
+        "<p style='color:#aaa;'>" + (unanswered > 0 ? unanswered + " skipped" : "All attempted!") + "</p>" +
+        "</div>";
+}
