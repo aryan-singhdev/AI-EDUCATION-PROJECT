@@ -1,6 +1,6 @@
 # AI-EDUCATION-PROJECT
 
-## AI Powered Personalized Learning Platform
+## Edu-AI An Powered Personalized Learning Platform
 
 A modern AI-based education platform designed to provide personalized learning support and improve the learning experience using web technologies.
 
