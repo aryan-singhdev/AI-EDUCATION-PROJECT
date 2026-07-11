@@ -22,7 +22,6 @@ This project focuses on creating a smart learning environment where users can ac
 - HTML
 - CSS
 - JavaScript
-- React.js
 - API Integration
 - Vercel Deployment
 
